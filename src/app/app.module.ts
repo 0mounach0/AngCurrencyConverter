@@ -5,6 +5,7 @@ import { AppComponent } from './app.component';
 import { ExchangeComponent } from './components/exchange/exchange.component';
 import { HistoryComponent } from './components/history/history.component';
 import { ExchangeRateService } from './services/exchange-rate.service';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -13,7 +14,8 @@ import { ExchangeRateService } from './services/exchange-rate.service';
     HistoryComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    FormsModule
   ],
   providers: [ExchangeRateService],
   bootstrap: [AppComponent]
