@@ -3,7 +3,6 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
 import { ExchangeComponent } from './components/exchange/exchange.component';
-import { HistoryComponent } from './components/history/history.component';
 import { ExchangeRateService } from './services/exchange-rate.service';
 import { FormsModule } from '@angular/forms';
 import { CurrencySwitchDirective } from './directives/currency-switch.directive';
@@ -12,7 +11,6 @@ import { CurrencySwitchDirective } from './directives/currency-switch.directive'
   declarations: [
     AppComponent,
     ExchangeComponent,
-    HistoryComponent,
     CurrencySwitchDirective
   ],
   imports: [

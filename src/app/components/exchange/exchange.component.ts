@@ -2,6 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { Currency } from 'src/app/app.component';
 import { ExchangeRateService } from 'src/app/services/exchange-rate.service';
 
+interface ConversionHistory {
+  realRate: number;
+  enteredRate: number;
+  initialAmount: number;
+  initialCurrency: Currency;
+  calculatedAmount: number;
+  calculatedCurrency: Currency;
+}
+
 @Component({
   selector: 'app-exchange',
   templateUrl: './exchange.component.html',
@@ -17,12 +26,16 @@ export class ExchangeComponent implements OnInit {
   public amount: number = 0;
   public currencyFrom: Currency = Currency.EUR;
   public currencyTo: Currency = Currency.USD;
-  public convertedAmount: number | null = null;
+  public convertedAmount!: number;
 
   public prevAmountToUSD: number = 0;
   public prevAmountToEUR: number = 0;
   public prevCurrencyFrom: Currency = Currency.EUR;
   public prevCurrencyTo: Currency = Currency.USD;
+
+  public forcedExchangeRate: number | null = null;
+  public realExchangeRate: number = 0;
+  public conversionHistory: ConversionHistory[] = [];
 
   constructor(private exchangeRateService: ExchangeRateService) {}
 
@@ -31,7 +44,17 @@ export class ExchangeComponent implements OnInit {
 
     setInterval(() => {
       this.exchangeRateService.updateExchangeRate();
-      this.exchangeRate = this.exchangeRateService.currentExchangeRate;
+      this.realExchangeRate = this.exchangeRateService.currentExchangeRate;
+
+      if (
+        this.forcedExchangeRate !== null &&
+        Math.abs(this.forcedExchangeRate - this.realExchangeRate) / this.realExchangeRate > 0.02
+      ) {
+        console.log(Math.abs(this.forcedExchangeRate - this.realExchangeRate) / this.realExchangeRate)
+        this.forcedExchangeRate = null; // Disable fixed rate due to significant variation
+      }
+
+      this.exchangeRate = this.forcedExchangeRate !== null ? this.forcedExchangeRate : this.realExchangeRate;
 
       this.convertCurrency();
 
@@ -67,6 +90,7 @@ export class ExchangeComponent implements OnInit {
     this.prevCurrencyTo = this.currencyTo;
 
     this.amount = Math.round(this.amount * 100) / 100; // Limit to 2 decimal places
+    this.exchangeRate = this.forcedExchangeRate !== null ? this.forcedExchangeRate : this.realExchangeRate;
 
     this.currencyFrom = isEurEntry ? Currency.EUR : Currency.USD;
     this.currencyTo = isEurEntry ? Currency.USD : Currency.EUR;
@@ -75,11 +99,32 @@ export class ExchangeComponent implements OnInit {
 
   public convertCurrency() {
     if (this.amount !== null) {
+      const rateToUse = this.forcedExchangeRate !== null ? this.forcedExchangeRate : this.exchangeRateService.currentExchangeRate;
+
       if (this.currencyFrom === Currency.EUR) {
-        this.convertedAmount = this.amount * this.exchangeRateService.currentExchangeRate;
+        this.convertedAmount = this.amount * rateToUse;
       } else {
-        this.convertedAmount = this.amount / this.exchangeRateService.currentExchangeRate;
+        this.convertedAmount = this.amount / rateToUse;
       }
+    }
+  }
+
+  public updateConversionHistory() {
+    const rateToUse = this.forcedExchangeRate !== null ? this.forcedExchangeRate : this.exchangeRateService.currentExchangeRate;
+
+    const historyEntry: ConversionHistory = {
+      realRate: this.realExchangeRate,
+      enteredRate: rateToUse,
+      initialAmount: this.amount,
+      initialCurrency: this.currencyFrom,
+      calculatedAmount: this.convertedAmount,
+      calculatedCurrency: this.currencyTo
+    };
+
+    this.conversionHistory.unshift(historyEntry);
+
+    if (this.conversionHistory.length > 5) {
+      this.conversionHistory.pop();
     }
   }
 
