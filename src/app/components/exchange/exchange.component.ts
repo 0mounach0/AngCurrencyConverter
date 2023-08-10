@@ -18,6 +18,9 @@ export class ExchangeComponent implements OnInit {
     setInterval(() => {
       this.exchangeRateService.updateExchangeRate();
       this.exchangeRate = this.exchangeRateService.currentExchangeRate;
+      if (this.eurAmount !== null) {
+        this.usdAmount = this.eurAmount * this.exchangeRateService.currentExchangeRate;
+      }
     }, 3000);
   }
 
