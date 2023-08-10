@@ -19,6 +19,11 @@ export class ExchangeComponent implements OnInit {
   public currencyTo: Currency = Currency.USD;
   public convertedAmount: number | null = null;
 
+  public prevAmountToUSD: number = 0;
+  public prevAmountToEUR: number = 0;
+  public prevCurrencyFrom: Currency = Currency.EUR;
+  public prevCurrencyTo: Currency = Currency.USD;
+
   constructor(private exchangeRateService: ExchangeRateService) {}
 
   ngOnInit() {
@@ -27,8 +32,18 @@ export class ExchangeComponent implements OnInit {
     setInterval(() => {
       this.exchangeRateService.updateExchangeRate();
       this.exchangeRate = this.exchangeRateService.currentExchangeRate;
+
       this.convertCurrency();
-      
+
+      if (this.currencyFrom === Currency.EUR) {
+        this.prevAmountToUSD = this.convertedAmount || this.prevAmountToUSD;
+      } else {
+        this.prevAmountToEUR = this.convertedAmount || this.prevAmountToEUR;
+      }
+
+      this.prevCurrencyFrom = this.currencyFrom;
+      this.prevCurrencyTo = this.currencyTo;
+
       /* // previous questions 
       if (this.eurAmount !== null) {
         this.usdAmount = this.eurAmount * this.exchangeRateService.currentExchangeRate;
@@ -42,6 +57,17 @@ export class ExchangeComponent implements OnInit {
   } */
 
   public toggleCurrency(isEurEntry: boolean) {
+    if (isEurEntry) {
+      this.amount = this.prevAmountToEUR;
+    } else {
+      this.amount = this.prevAmountToUSD;
+    }
+
+    this.prevCurrencyFrom = this.currencyFrom;
+    this.prevCurrencyTo = this.currencyTo;
+
+    this.amount = Math.round(this.amount * 100) / 100; // Limit to 2 decimal places
+
     this.currencyFrom = isEurEntry ? Currency.EUR : Currency.USD;
     this.currencyTo = isEurEntry ? Currency.USD : Currency.EUR;
     this.convertCurrency();
