@@ -6,12 +6,14 @@ import { ExchangeComponent } from './components/exchange/exchange.component';
 import { HistoryComponent } from './components/history/history.component';
 import { ExchangeRateService } from './services/exchange-rate.service';
 import { FormsModule } from '@angular/forms';
+import { CurrencySwitchDirective } from './directives/currency-switch.directive';
 
 @NgModule({
   declarations: [
     AppComponent,
     ExchangeComponent,
-    HistoryComponent
+    HistoryComponent,
+    CurrencySwitchDirective
   ],
   imports: [
     BrowserModule,
