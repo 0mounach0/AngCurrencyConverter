@@ -1,4 +1,7 @@
 <div class="exchange-container">
+    <div class="card-exchange">
+
+    </div>
     <h1>Exchange Rate: {{ exchangeRate.toFixed(2) }} EUR/USD</h1>
 
     <!-- 
@@ -13,33 +16,35 @@
     </div> -->
 
     <div class="form-group">
-        <label for="forcedExchangeRate">Set Forced Rate:</label>
-        <input
-          id="forcedExchangeRate"
-          type="number"
-          [(ngModel)]="forcedExchangeRate"
-          (change)="convertCurrency()"
-          class="form-control"
-        >
-    </div>
+        <div class="input-group">
+          <label class="label-c" for="amount">Enter Amount:</label>
+          <input id="amount" type="number" [(ngModel)]="amount" (change)="convertCurrency()">
 
-    <div>
-        <label for="amount">Enter Amount:</label>
-        <input id="amount" type="number" [(ngModel)]="amount" (change)="convertCurrency()">
+        </div>
+
+        <div class="input-group">
+          <label class="label-c" for="forcedExchangeRate">Set Forced Rate:</label>
+          <input id="forcedExchangeRate" type="number" [(ngModel)]="forcedExchangeRate" (change)="convertCurrency()"
+            class="form-control">
+
+        </div>
         
-        <div>
-            <span>{{ Currency.EUR }}</span>
+        <div class="input-group">
+          <label class="label-c">Switch:</label>
+
+            <span>{{ Currency.EUR }} </span>
         
-            <div class="switch-container">
+            <span class="switch-container">
             <label class="switch">
                 <input type="checkbox" appCurrencySwitch (currencyChanged)="toggleCurrency($event)">
                 <span class="slider round"></span>
             </label>
-            </div>
+        </span>
             
-            <span>{{ Currency.USD }}</span>
+            <span> {{ Currency.USD }}</span>
         </div>
-
+        
+        <br>
         <button (click)="updateConversionHistory()">Add to History</button>
         
     </div>

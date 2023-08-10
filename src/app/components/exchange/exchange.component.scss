@@ -101,5 +101,76 @@
         }
       }
     }
+    
+    .input-group {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+    
+        label {
+          font-weight: bold;
+          margin-right: 10px;
+          flex: 0.4; // Adjust the value as needed
+        }
+    
+        input {
+          padding: 8px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          flex: 0.6; // Adjust the value as needed
+        }
+      }
+
+    .label-c {
+        width: 80px;
+    }
+
+    .switch-container {
+        position: relative;
+        display: inline-block;
+        width: 45px;
+        height: 24px;
+    
+        .slider {
+          position: absolute;
+          cursor: pointer;
+          border-radius: 12px;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: #ccc;
+          transition: 0.4s;
+    
+          &::before {
+            position: absolute;
+            content: '';
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            border-radius: 50%;
+            transition: 0.4s;
+          }
+        }
+
+        input.switch {
+            display: none;
+        }
+    
+        input:checked + .slider {
+          background-color: #007aff;
+    
+          &::before {
+            transform: translateX(21px);
+          }
+        }
+    
+        input:focus + .slider {
+          box-shadow: 0 0 1px #007aff;
+        }
+      }
+
   }
   
