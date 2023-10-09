@@ -18,10 +18,6 @@ interface ConversionHistory {
 })
 export class ExchangeComponent implements OnInit {
   public exchangeRate: number = 0;
-  /* // previous questions
-  public eurAmount: number = 0;
-  public usdAmount: number | null = null;
-  */
   public Currency = Currency;
   public amount: number = 0;
   public currencyFrom: Currency = Currency.EUR;
@@ -51,11 +47,10 @@ export class ExchangeComponent implements OnInit {
         Math.abs(this.forcedExchangeRate - this.realExchangeRate) / this.realExchangeRate > 0.02
       ) {
         console.log(Math.abs(this.forcedExchangeRate - this.realExchangeRate) / this.realExchangeRate)
-        this.forcedExchangeRate = null; // Disable fixed rate due to significant variation
+        this.forcedExchangeRate = null;
       }
 
       this.exchangeRate = this.forcedExchangeRate !== null ? this.forcedExchangeRate : this.realExchangeRate;
-
       this.convertCurrency();
 
       if (this.currencyFrom === Currency.EUR) {
@@ -66,18 +61,8 @@ export class ExchangeComponent implements OnInit {
 
       this.prevCurrencyFrom = this.currencyFrom;
       this.prevCurrencyTo = this.currencyTo;
-
-      /* // previous questions 
-      if (this.eurAmount !== null) {
-        this.usdAmount = this.eurAmount * this.exchangeRateService.currentExchangeRate;
-      } */
     }, 3000);
   }
-
-  /* / previous questions  
-    public convertToUSD() {
-    this.usdAmount = this.eurAmount * this.exchangeRateService.currentExchangeRate;
-  } */
 
   public toggleCurrency(isEurEntry: boolean) {
     if (isEurEntry) {
@@ -89,7 +74,7 @@ export class ExchangeComponent implements OnInit {
     this.prevCurrencyFrom = this.currencyFrom;
     this.prevCurrencyTo = this.currencyTo;
 
-    this.amount = Math.round(this.amount * 100) / 100; // Limit to 2 decimal places
+    this.amount = Math.round(this.amount * 100) / 100;
     this.exchangeRate = this.forcedExchangeRate !== null ? this.forcedExchangeRate : this.realExchangeRate;
 
     this.currencyFrom = isEurEntry ? Currency.EUR : Currency.USD;
@@ -98,15 +83,8 @@ export class ExchangeComponent implements OnInit {
   }
 
   public convertCurrency() {
-    if (this.amount !== null) {
-      const rateToUse = this.forcedExchangeRate !== null ? this.forcedExchangeRate : this.exchangeRateService.currentExchangeRate;
-
-      if (this.currencyFrom === Currency.EUR) {
-        this.convertedAmount = this.amount * rateToUse;
-      } else {
-        this.convertedAmount = this.amount / rateToUse;
-      }
-    }
+    const result = this.exchangeRateService.convertCurrency(this.amount, this.currencyFrom, this.currencyTo);
+    this.convertedAmount = result !== null ? result : 0;
   }
 
   public updateConversionHistory() {
@@ -127,5 +105,4 @@ export class ExchangeComponent implements OnInit {
       this.conversionHistory.pop();
     }
   }
-
 }
