@@ -18,8 +18,7 @@
     <div class="form-group">
         <div class="input-group">
           <label class="label-c" for="amount">Enter Amount:</label>
-          <input id="amount" type="number" [(ngModel)]="amount" (change)="convertCurrency()">
-
+          <input id="amount" type="number" [(ngModel)]="amount" (input)="onInputChange()">
         </div>
 
         <div class="input-group">

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Currency } from 'src/app/app.component';
 import { ExchangeRateService } from 'src/app/services/exchange-rate.service';
+import { Subject } from 'rxjs';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 
 interface ConversionHistory {
   realRate: number;
@@ -33,6 +35,9 @@ export class ExchangeComponent implements OnInit {
   public realExchangeRate: number = 0;
   public conversionHistory: ConversionHistory[] = [];
 
+  private destroy$: Subject<void> = new Subject<void>();
+  private inputChanged$: Subject<void> = new Subject<void>();
+
   constructor(private exchangeRateService: ExchangeRateService) {}
 
   ngOnInit() {
@@ -62,6 +67,15 @@ export class ExchangeComponent implements OnInit {
       this.prevCurrencyFrom = this.currencyFrom;
       this.prevCurrencyTo = this.currencyTo;
     }, 3000);
+
+    this.inputChanged$
+        .pipe(
+          debounceTime(500),
+          takeUntil(this.destroy$)
+        )
+        .subscribe(() => {
+          this.convertCurrency();
+        });
   }
 
   public toggleCurrency(isEurEntry: boolean) {
@@ -104,5 +118,13 @@ export class ExchangeComponent implements OnInit {
     if (this.conversionHistory.length > 5) {
       this.conversionHistory.pop();
     }
+  }
+  onInputChange() {
+    this.inputChanged$.next();
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
