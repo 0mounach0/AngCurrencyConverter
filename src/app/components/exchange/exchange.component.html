@@ -48,7 +48,9 @@
         
     </div>
     <div *ngIf="convertedAmount !== null">
-    <p>{{ amount }} {{ currencyFrom }} is equal to {{ convertedAmount?.toFixed(2) }} {{ currencyTo }}</p>
+      <p>
+        {{ amount | number:'1.2-2' }} {{ currencyFrom }} is equal to {{ convertedAmount | number:'1.2-2' }} {{ currencyTo }}
+      </p>
     </div>
 
     <!-- Conversion history using Flexbox -->
