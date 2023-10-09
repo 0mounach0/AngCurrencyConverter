@@ -53,23 +53,7 @@
       </p>
     </div>
 
-    <!-- Conversion history using Flexbox -->
-  <div class="conversion-history">
-    <div class="history-row header">
-      <div>Real Rate</div>
-      <div>Entered Rate</div>
-      <div>Initial Amount</div>
-      <div>Initial Currency</div>
-      <div>Calculated Amount</div>
-      <div>Calculated Currency</div>
-    </div>
-    <div *ngFor="let entry of conversionHistory" class="history-row">
-      <div>{{ entry.realRate?.toFixed(2) }}</div>
-      <div>{{ entry.enteredRate?.toFixed(2) }}</div>
-      <div>{{ entry.initialAmount?.toFixed(2) }}</div>
-      <div>{{ entry.initialCurrency }}</div>
-      <div>{{ entry.calculatedAmount?.toFixed(2) }}</div>
-      <div>{{ entry.calculatedCurrency }}</div>
-    </div>
-  </div>
+    <!-- Conversion history  -->
+    <app-history-table [conversionHistory]="conversionHistory"></app-history-table>
+
 </div>
